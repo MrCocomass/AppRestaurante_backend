@@ -11,8 +11,7 @@ class FoodController extends Controller
 	public function index()
 	{
 		$headers = getallheaders();
-		$foodList = Foods::where('name')->get();
-		print('hola');
+		$foodList = Foods::where('name')->get(); 
 	}
 
 

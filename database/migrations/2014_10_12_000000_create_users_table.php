@@ -24,11 +24,7 @@ class CreateUsersTable extends Migration
         $user->save();
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
+    
     public function down()
     {
         Schema::dropIfExists('users');
