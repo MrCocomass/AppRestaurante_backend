@@ -18,12 +18,11 @@ class Controller extends BaseController
     protected $key = '7kvP3yy3b4SGpVzd6uSeSBhBEDtGzPb2n';
 
     protected function error($code, $message)
-    {
-        return  response()->json([
-            'code' => $code,
-            'message' => $message
-        ], $code);
-    }
+    	{
+        	return  response()->json([
+            	'code' => $code,
+            	'message' => $message], $code);
+    	}
 
     protected function success($message, $data = [])
     {
@@ -46,6 +45,18 @@ class Controller extends BaseController
             return true;
         }
         return false;
+    }
+
+    function createResponse($code, $message, $data = [])
+    {
+        if ($data == null) {
+           $data = (object)[];
+        }
+        return response()->json([
+            'code' => $code,
+            'message' => $message,
+            'data' => $data
+        ]);
     }
 
 }

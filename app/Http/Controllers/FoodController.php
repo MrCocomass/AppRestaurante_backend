@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Http\Request;
+use \Firebase\JWT\JWT;
 use App\Foods;
 
 class FoodController extends Controller
@@ -11,18 +13,23 @@ class FoodController extends Controller
 	public function index()
 	{
 		$headers = getallheaders();
-		$foodList = Foods::where('name')->get(); 
+		$foodList = Foods::where('name')->get();
 	}
 
-
 	public function add()
-
     {
-    $name = $_POST['name'];
+    	$name = $_POST['name'];
         $price = $_POST['price'];
         $description = $_POST['description'];
         $imagen = $_POST['imagen'];
+        $foods = Foods::where('name', $name)->get();
 
+        foreach ($foods as $food => $name) 
+        {
+        	return $this->error(400, 'El email ya existe, por favor utiliza otro'); 
+        }
+
+  
         // $food = Foods::where('email', $email)->get();
         
 		$foods = new Foods();
@@ -31,11 +38,14 @@ class FoodController extends Controller
             $foods->description = $description;
             $foods->imagen = $imagen;
             $foods->save();
+
+         print('comida añadida');
     }
 
     public function get_food()
-
     {
-    	
+    	$foods = Foods::all();
+        return $this->createResponse(200, 'Comidas', array('comidas' => $foods));
     }
+
 }

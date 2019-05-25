@@ -18,13 +18,12 @@ class UserController extends Controller
     }
 
     public function register (Request $request)
-
     {
         if (!isset($_POST['name']) or !isset($_POST['email']) or !isset($_POST['password'])) 
         {
             return $this->error(401, 'Tienes que rellenar todos los campos');
         }
-      
+      	
         $name = $_POST['name'];
         $email = $_POST['email'];
         $password = $_POST['password'];
@@ -40,7 +39,6 @@ class UserController extends Controller
             }
 
         }
-
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
@@ -79,7 +77,6 @@ class UserController extends Controller
     }
 
     protected function login (Request $request)
-
     {
 
         $email = $_POST['email'];
@@ -99,14 +96,12 @@ class UserController extends Controller
 
         $users = Users::where('email', $email)->get();
 
-
         if ($users->isEmpty()) { 
 
             return $this->error(400, "Ese usuario no existe, por favor introduce un email correcto");
 
         }
-
-       
+      
         $userDecrypt = Users::where('email', $email)->first();
 				$passwordHold = $userDecrypt->password;
 
@@ -125,8 +120,7 @@ class UserController extends Controller
                 'password' => $password,
                 'name' => $userSave->name
             );
-
-            
+           
         $token = JWT::encode($array, $key);
 
             return $this->success("Usuario logeado", $token);
@@ -137,11 +131,8 @@ class UserController extends Controller
         	else
         {
             return response("Los datos no son correctos", 403)->header('Access-Control-Allow-Origin', '*');
-        }
-        
-
+        }    
     }
-
 }
 
    //  public function register()
