@@ -26,10 +26,9 @@ class FoodController extends Controller
 
         foreach ($foods as $food => $name) 
         {
-        	return $this->error(400, 'El email ya existe, por favor utiliza otro'); 
+        	return $this->error(400, 'this food is already added'); 
         }
 
-  
         // $food = Foods::where('email', $email)->get();
         
 		$foods = new Foods();
@@ -38,8 +37,7 @@ class FoodController extends Controller
             $foods->description = $description;
             $foods->imagen = $imagen;
             $foods->save();
-
-         print('comida añadida');
+            return $this->success(200, 'food added');                   
     }
 
     public function get_food()

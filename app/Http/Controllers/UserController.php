@@ -72,7 +72,7 @@ class UserController extends Controller
         }
         	else
         {
-            return $this->error(401, 'Debes rellenar todos los campos');
+            return $this->error(400, 'Debes rellenar todos los campos');
         }
     }
 
