@@ -11,13 +11,6 @@ use App\Users;
 class UserController extends Controller
 {
 
-	public function index()
-    {
-        
-        $header = getallheaders();
-        $userParams = JWT::decode($header['Authorization'], $this->key, array('HS256'));
-    }
-
     public function register (Request $request)
     {
         if (!isset($_POST['name']) or !isset($_POST['email']) or !isset($_POST['password'])) 
@@ -71,6 +64,7 @@ class UserController extends Controller
         	}
     }
 
+
     protected function login (Request $request)
     {
         $email = $_POST['email'];
@@ -78,19 +72,19 @@ class UserController extends Controller
 
         if (empty($email))
         {
-            return $this->error (401, 'Por favor introduce un email');
+            return $this->error (401, 'add email');
         }
 
         if (empty($password))
         {
-            return $this->error (401, 'Por favor introduce el password');
+            return $this->error (401, 'add pasword');
         }
 
         $users = Users::where('email', $email)->get();
 
         if ($users->isEmpty())
         { 
-            return $this->error(400, "Ese usuario no existe, por favor introduce un email correcto");
+            return $this->error(400, "User dont exist");
         }
       
         $userDecrypt = Users::where('email', $email)->first();
@@ -110,12 +104,12 @@ class UserController extends Controller
                 'name' => $userSave->name
             );
            
-        $token = JWT::encode($array, $key);
+           	// $token = JWT::encode($array, $key);
 
-            return $this->success("Usuario logeado", $token);
-
+           	// return $this->createResponse(200, 'login correcto', ['token'=>$token, 'user' => $userSave, 'privacity' =>$privacity]);
+           
+            return $this->success("Usuario logeado");
             // return response($token)->header('Access-Control-Allow-Origin', '*');
-
         }
         	else
         {
