@@ -16,7 +16,10 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     protected $key = '7kvP3yy3b4SGpVzd6uSeSBhBEDtGzPb2n';
-
+	protected function getGlobalPath($image){
+        return "http://192.168.1.35:8888/AppRestaurant/public/uploads/" . $image;
+    }
+    
     protected function error($code, $message)
     	{
         	return  response()->json([
@@ -57,6 +60,17 @@ class Controller extends BaseController
             'message' => $message,
             'data' => $data
         ]);
+    }
+
+    protected function recoverPassword($email)
+    {
+        $userRecover = Users::where('email', $email)->first();
+        $emailRecover = $userRecover->email;
+        if($emailRecover == $email)
+        {
+            return true;
+        }
+        return false;
     }
 
 }

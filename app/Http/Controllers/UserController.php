@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use \Firebase\JWT\JWT;
 use App\Users;
@@ -30,14 +31,11 @@ class UserController extends Controller
         $users = Users::where('email', $email)->get();
 
         foreach ($users as $user) 
-
         {
             if ($user->email == $email) 
-
             {
                 return $this->error(400, 'El email ya existe, por favor utiliza otro'); 
             }
-
         }
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -45,8 +43,8 @@ class UserController extends Controller
             return $this->error(400, 'Por favor introduce un email que sea valido con formato @___.com'); 
         }
 
-        if (strlen($password) < 8){
-
+        if (strlen($password) < 8)
+        {
             return $this->error(400, 'El password debe tener al  menos 8 caracteres');
         }
 
@@ -57,49 +55,42 @@ class UserController extends Controller
                 $users = new Users();
                 $users->name = $name = str_replace(' ', '',$request->name);
                 $users->password = encrypt($password);
-                $users->email = $email;
-                // $users->rol_id = 2;
-
+                $users->email = $email;          
                 $users->save();
             }
-
             catch(Exception $e)
             {
                 return $this->error(2, $e->getMessage());
             }
             
-            return $this->success('Usuario registrado correctamente');
-        }
-        	else
-        {
-            return $this->error(400, 'Debes rellenar todos los campos');
-        }
+            	return $this->success('Usuario registrado correctamente');
+        	}
+        else
+       		{
+            	return $this->error(400, 'Debes rellenar todos los campos');
+        	}
     }
 
     protected function login (Request $request)
     {
-
         $email = $_POST['email'];
         $password = $_POST['password'];
 
-        if (empty($email)){
-
+        if (empty($email))
+        {
             return $this->error (401, 'Por favor introduce un email');
-
         }
 
-        if (empty($password)){
-
+        if (empty($password))
+        {
             return $this->error (401, 'Por favor introduce el password');
-
         }
 
         $users = Users::where('email', $email)->get();
 
-        if ($users->isEmpty()) { 
-
+        if ($users->isEmpty())
+        { 
             return $this->error(400, "Ese usuario no existe, por favor introduce un email correcto");
-
         }
       
         $userDecrypt = Users::where('email', $email)->first();
@@ -108,10 +99,8 @@ class UserController extends Controller
         $decryptedPassword = decrypt($passwordHold);
         $key = $this->key;
         if (self::checkLogin($email, $password))
-        {
-            
-            $userSave = Users::where('email', $email)->first();
-
+        {   
+        	$userSave = Users::where('email', $email)->first();
 
             $array = $arrayName = array
             (
@@ -133,51 +122,38 @@ class UserController extends Controller
             return response("Los datos no son correctos", 403)->header('Access-Control-Allow-Origin', '*');
         }    
     }
+
+    public function recover(Request $request)
+    {
+        $email = $_POST['email'];
+        if (empty($_POST['email'])) 
+        {
+            return $this->createResponse(401, 'Introduzca su email');
+        } 
+
+        $users = Users::where('email', $email)->get();
+        if ($users->isEmpty())
+        { 
+                return $this->createResponse(400, 'Ese usuario no existe');
+        }
+        if (self::recoverPassword($email))
+        {
+            $userRecover = Users::where('email', $email)->first();
+            $id = $userRecover->id;
+            $pwdSent = Users::where('email', $userRecover->email)->first()->password;
+            $dataEmail = array(
+                'pwd' => $pwdSent,
+            );
+            Mail::send('emails.welcome', $dataEmail, function($message){
+                $emailRecipient = $_POST['email'];
+                $message->from('danielmirandafer@gmail.com', 'Recuperación contraseña');
+                $message->to($emailRecipient)->subject('Recuperación contraseña');
+        });
+            return $this->createResponse(200, "Contraseña Enviada");
+        }
+        else
+        {
+        	return $this->createResponse(403, "Los datos no son correctos");
+    	}
+	}
 }
-
-   //  public function register()
-   //  {
-
-   //  		if (empty($_POST['email']) || empty($_POST['password']) )
-   //  		{
-   //  			print('rellenar todos los campos');
-   //  			exit();
-   //  		}
-
-   //  		if(strlen($_POST['password']) < 8 || strlen($_POST['password']) > 12)
-   //  		{
-   //              return $this->createResponse(400, 'La contraseña ha de tener entre 8 y 12 caracteres');
-   //      	}
-
-        	
-   //  		$name = $_POST['name'];
-   //      	$email = $_POST['email'];
-   //      	$password = $_POST['password'];
-   //      	$users = Users::where('email', $email)->get();
-
-			// $users = new Users();
-   //         		$users->email = $email;
-   //          	$users->password = $password;
-   //          	$users->name = $name;
-   //          	$users->save();
-  
-   //  }
-	
-	// public function login()
-
- //    {
- //    	$email = $_POST['email'];
- //            $password = $_POST['password'];
- //            $users = Users::where('email', $email)->get();
-
- //    	if(self::checkLogin($email, $password)){ 
-
- //                $userSave = Users::where('email', $email)->first();
- //            }
-
- //            if (empty($_POST['password']))
- //    		{
- //    			print('rellena los campos');
- //    			exit();
- //    		}
- //    }

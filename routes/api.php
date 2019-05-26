@@ -9,7 +9,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::apiResource('users', 'UserController');
 	Route::post('register', 'UserController@register');
 	Route::post('login', 'UserController@login');
-
+	Route::post('recover', 'UserController@recover');
 
 Route::apiResource('foods', 'FoodController');
 	Route::post('addfood', 'FoodController@add');
