@@ -59,19 +59,19 @@ class Controller extends BaseController
         ]);
     }
 
-    protected function recoverPassword($email)
-    {
-        $userRecover = Users::where('email', $email)->first();
-        $emailRecover = $userRecover->email;
-        if($emailRecover == $email)
-        {
-            return true;
-        }
-        return false;
-    }
+    // protected function recoverPassword($email)
+    // {
+    //     $userRecover = Users::where('email', $email)->first();
+    //     $emailRecover = $userRecover->email;
+    //     if($emailRecover == $email)
+    //     {
+    //         return true;
+    //     }
+    //     return false;
+    // }
 
-    protected function getGlobalPath($image){
-        return "http://192.168.1.35:8888/AppRestaurant/public/uploads/" . $image;
-    }
+    // protected function getGlobalPath($image){
+    //     return "http://192.168.1.35:8888/AppRestaurant/public/uploads/" . $image;
+    // }
 
 }

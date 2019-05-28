@@ -28,7 +28,7 @@ class FoodController extends Controller
         {
         	return $this->error(400, 'this food is already added'); 
         }
-
+        
         // $food = Foods::where('email', $email)->get();
         
 		$foods = new Foods();
@@ -44,6 +44,14 @@ class FoodController extends Controller
     {
     	$foods = Foods::all();
         return $this->createResponse(200, 'Comidas', array('comidas' => $foods));
+    }
+
+    public function delete_food($id)
+    {
+        
+        $foods = Foods::find($id);
+        $foods->delete();
+
     }
 
 }

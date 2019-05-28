@@ -56,11 +56,11 @@ class UserController extends Controller
                 return $this->error(2, $e->getMessage());
             }
             
-            	return $this->success('Usuario registrado correctamente');
+            	return $this->success('register success');
         	}
         else
        		{
-            	return $this->error(400, 'Debes rellenar todos los campos');
+            	return $this->error(400, 'fill empty parameters');
         	}
     }
 
@@ -108,46 +108,17 @@ class UserController extends Controller
 
            	// return $this->createResponse(200, 'login correcto', ['token'=>$token, 'user' => $userSave, 'privacity' =>$privacity]);
            
-            return $this->success("Usuario logeado");
+            return $this->success("Login success");
             // return response($token)->header('Access-Control-Allow-Origin', '*');
         }
         	else
         {
-            return response("Los datos no son correctos", 403)->header('Access-Control-Allow-Origin', '*');
+            return response("wrong data", 403)->header('Access-Control-Allow-Origin', '*');
         }    
     }
 
-    public function recover(Request $request)
+    public function update (Request $request)
     {
-        $email = $_POST['email'];
-        if (empty($_POST['email'])) 
-        {
-            return $this->createResponse(401, 'Introduzca su email');
-        } 
 
-        $users = Users::where('email', $email)->get();
-        if ($users->isEmpty())
-        { 
-                return $this->createResponse(400, 'Ese usuario no existe');
-        }
-        if (self::recoverPassword($email))
-        {
-            $userRecover = Users::where('email', $email)->first();
-            $id = $userRecover->id;
-            $pwdSent = Users::where('email', $userRecover->email)->first()->password;
-            $dataEmail = array(
-                'pwd' => $pwdSent,
-            );
-            Mail::send('emails.welcome', $dataEmail, function($message){
-                $emailRecipient = $_POST['email'];
-                $message->from('danielmirandafer@gmail.com', 'Recuperación contraseña');
-                $message->to($emailRecipient)->subject('Recuperación contraseña');
-        });
-            return $this->createResponse(200, "Contraseña Enviada");
-        }
-        else
-        {
-        	return $this->createResponse(403, "Los datos no son correctos");
-    	}
-	}
+    }   
 }

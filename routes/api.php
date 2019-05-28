@@ -14,7 +14,10 @@ Route::apiResource('users', 'UserController');
 Route::apiResource('foods', 'FoodController');
 	Route::post('addfood', 'FoodController@add');
 	Route::get('getfood', 'FoodController@get_food');
+	//Route::delete('deletefood', 'FoodController@delete_food');
+
 
 Route::apiResource('orders', 'OrderController');
 	Route::post('neworder', 'OrderController@neworder');
 
+Route::delete('deletefood/{id}', 'FoodController@delete_food');
