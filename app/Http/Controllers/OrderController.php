@@ -10,4 +10,10 @@ class OrderController extends Controller
    {
    	
    }
+
+   // public function quit_food($id)
+   //  {     
+   //      $foods = Foods::find($id);
+   //      $foods->delete();
+   //  }
 }

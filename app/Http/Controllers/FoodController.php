@@ -48,10 +48,12 @@ class FoodController extends Controller
 
     public function delete_food($id)
     {
-        
         $foods = Foods::find($id);
         $foods->delete();
-
     }
 
+    public function food_detail()
+    {
+        
+    }
 }
