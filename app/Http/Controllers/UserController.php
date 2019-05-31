@@ -91,7 +91,7 @@ class UserController extends Controller
 				$passwordHold = $userDecrypt->password;
 
         $decryptedPassword = decrypt($passwordHold);
-        $key = $this->key;
+        // $key = $this->key;
         if (self::checkLogin($email, $password))
         {   
         	$userSave = Users::where('email', $email)->first();
@@ -105,7 +105,6 @@ class UserController extends Controller
             );
            
            	// $token = JWT::encode($array, $key);
-
            	// return $this->createResponse(200, 'login correcto', ['token'=>$token, 'user' => $userSave, 'privacity' =>$privacity]);
            
             return $this->success("Login success");
