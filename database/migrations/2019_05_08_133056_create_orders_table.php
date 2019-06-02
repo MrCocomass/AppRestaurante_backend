@@ -27,7 +27,7 @@ class CreateOrdersTable extends Migration
      */
     public function down()
     {
-         // Schema::dropIfExists('orders');  
+    // Schema::dropIfExists('orders');  
          Schema::table('orders', function($table) {
        $table->foreign('user_id')->references('id')->on('users');
        $table->foreign('food_id')->references('id')->on('foods');

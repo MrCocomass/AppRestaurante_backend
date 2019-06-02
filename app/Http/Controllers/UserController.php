@@ -2,16 +2,96 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Http\Request;
-use \Firebase\JWT\JWT;
 use App\Users;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
+use \Firebase\JWT\JWT;
 
 class UserController extends Controller
 {
 
+    public function index()
+    {
+        
+        $header = getallheaders();
+        $userParams = JWT::decode($header['Authorization'], $this->key, array('HS256'));
+ 
+    }
+
+    protected function login(Request $request)
+
+    {
+
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+
+        if (empty($email)){
+
+            return $this->error (401, 'Por favor introduce un email');
+
+        }
+
+        if (empty($password)){
+
+            return $this->error (401, 'Por favor introduce el password');
+
+        }
+
+        $users = Users::where('email', $email)->get();
+
+
+        if ($users->isEmpty()) { 
+
+            return $this->error(400, "Ese usuario no existe, por favor introduce un email correcto");
+
+        }
+      
+        $userDecrypt = Users::where('email', $email)->first();
+
+
+        $passwordHold = $userDecrypt->password;
+
+        $decryptedPassword = decrypt($passwordHold);
+        $key = $this->key;
+        if (self::checkLogin($email, $password))
+        {
+            
+            $userSave = Users::where('email', $email)->first();
+
+
+            $array = $arrayName = array
+            (
+                'id' => $userSave->id,
+                'email' => $email,
+                'password' => $password,
+                'name' => $userSave->name
+            );
+            
+            $token= JWT::encode($array, $key);
+            return $this->success("Usuario logeado", $token);
+
+            // return response($token)->header('Access-Control-Allow-Origin', '*');
+
+        }
+        else
+        {
+            return response("Los datos no son correctos", 403)->header('Access-Control-Allow-Origin', '*');
+        }
+    }
+
+// namespace App\Http\Controllers;
+
+// use Illuminate\Support\Facades\Crypt;
+// use Illuminate\Support\Facades\Mail;
+// use Illuminate\Http\Request;
+// use \Firebase\JWT\JWT;
+// use App\Users;
+
+// class UserController extends Controller
+// {
+
     public function register (Request $request)
+
     {
         if (!isset($_POST['name']) or !isset($_POST['email']) or !isset($_POST['password'])) 
         {
@@ -63,61 +143,62 @@ class UserController extends Controller
             	return $this->error(400, 'fill empty parameters');
         	}
     }
-
-
-    protected function login (Request $request)
-    {
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-
-        if (empty($email))
-        {
-            return $this->error (401, 'add email');
-        }
-
-        if (empty($password))
-        {
-            return $this->error (401, 'add pasword');
-        }
-
-        $users = Users::where('email', $email)->get();
-
-        if ($users->isEmpty())
-        { 
-            return $this->error(400, "User dont exist");
-        }
-      
-        $userDecrypt = Users::where('email', $email)->first();
-				$passwordHold = $userDecrypt->password;
-
-        $decryptedPassword = decrypt($passwordHold);
-        // $key = $this->key;
-        if (self::checkLogin($email, $password))
-        {   
-        	$userSave = Users::where('email', $email)->first();
-
-            $array = $arrayName = array
-            (
-                'id' => $userSave->id,
-                'email' => $email,
-                'password' => $password,
-                'name' => $userSave->name
-            );
-           
-           	// $token = JWT::encode($array, $key);
-           	// return $this->createResponse(200, 'login correcto', ['token'=>$token, 'user' => $userSave, 'privacity' =>$privacity]);
-           
-            return $this->success("Login success");
-            // return response($token)->header('Access-Control-Allow-Origin', '*');
-        }
-        	else
-        {
-            return response("wrong data", 403)->header('Access-Control-Allow-Origin', '*');
-        }    
-    }
-
-    public function update (Request $request)
-    {
-
-    }   
 }
+
+
+//     protected function login (Request $request)
+//     {
+//         $email = $_POST['email'];
+//         $password = $_POST['password'];
+
+//         if (empty($email))
+//         {
+//             return $this->error (401, 'add email');
+//         }
+
+//         if (empty($password))
+//         {
+//             return $this->error (401, 'add pasword');
+//         }
+
+//         $users = Users::where('email', $email)->get();
+
+//         if ($users->isEmpty())
+//         { 
+//             return $this->error(400, "User dont exist");
+//         }
+      
+//         $userDecrypt = Users::where('email', $email)->first();
+// 				$passwordHold = $userDecrypt->password;
+
+//         $decryptedPassword = decrypt($passwordHold);
+//         // $key = $this->key;
+//         if (self::checkLogin($email, $password))
+//         {   
+//         	$userSave = Users::where('email', $email)->first();
+
+//             $array = $arrayName = array
+//             (
+//                 'id' => $userSave->id,
+//                 'email' => $email,
+//                 'password' => $password,
+//                 'name' => $userSave->name
+//             );
+           
+//            	// $token = JWT::encode($array, $key);
+//            	// return $this->createResponse(200, 'login correcto', ['token'=>$token, 'user' => $userSave, 'privacity' =>$privacity]);
+           
+//             return $this->success("Login success");
+//             // return response($token)->header('Access-Control-Allow-Origin', '*');
+//         }
+//         	else
+//         {
+//             return response("wrong data", 403)->header('Access-Control-Allow-Origin', '*');
+//         }    
+//     }
+
+//     public function update (Request $request)
+//     {
+
+//     }   
+// }
