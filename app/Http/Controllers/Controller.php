@@ -80,17 +80,17 @@ class Controller extends BaseController
     //     return false;
     // }
 
-    // function createResponse($code, $message, $data = [])
-    // {
-    //     if ($data == null) {
-    //        $data = (object)[];
-    //     }
-    //     return response()->json([
-    //         'code' => $code,
-    //         'message' => $message,
-    //         'data' => $data
-    //     ]);
-    // }
+    function createResponse($code, $message, $data = [])
+    {
+        if ($data == null) {
+           $data = (object)[];
+        }
+        return response()->json([
+            'code' => $code,
+            'message' => $message,
+            'data' => $data
+        ]);
+    }
 
     // protected function recoverPassword($email)
     // {
